@@ -3,9 +3,9 @@ import django_heroku
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cafe-unelma.herokuapp.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',

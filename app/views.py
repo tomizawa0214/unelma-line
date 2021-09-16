@@ -13,13 +13,13 @@ from linebot.models import (
 import os
 
 
-CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"]
-CHANNEL_SECRET = os.environ["CHANNEL_SECRET"]
+# CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"]
+# CHANNEL_SECRET = os.environ["CHANNEL_SECRET"]
 
-line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
-handler = WebhookHandler(CHANNEL_SECRET)
-# line_bot_api = LineBotApi("LoQufLNooUro/P/XN9S9OaO8YF45+j47kIahuAzUwoF8mPO1VQQLdwgzTFRUn/qliX/Ndnd6dzKilib3F4gPQ1O4tQkNDoNl7Z57lzDZRCruOxRjKBNIERV2I3LRMvZQ8OKqj1UAdmsGPfZQEeV7iQdB04t89/1O/w1cDnyilFU=")
-# handler = WebhookHandler("9a2b63f94bf6b809a34bbc2381950c9f")
+# line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
+# handler = WebhookHandler(CHANNEL_SECRET)
+line_bot_api = LineBotApi("LoQufLNooUro/P/XN9S9OaO8YF45+j47kIahuAzUwoF8mPO1VQQLdwgzTFRUn/qliX/Ndnd6dzKilib3F4gPQ1O4tQkNDoNl7Z57lzDZRCruOxRjKBNIERV2I3LRMvZQ8OKqj1UAdmsGPfZQEeV7iQdB04t89/1O/w1cDnyilFU=")
+handler = WebhookHandler("9a2b63f94bf6b809a34bbc2381950c9f")
 
 class CallbackView(View):
     def get(self, request, *args, **kwargs):

@@ -669,7 +669,7 @@ class CallbackView(View):
                         "contents": [
                             {
                                 "type": "text",
-                                "text": "ご予約ありがとうございます！",
+                                "text": f"ご予約ありがとうございます！{reservation[0]}様のお越しを心よりお待ちしております。",
                                 "weight": "bold",
                                 "align": "center",
                                 "margin": "xxl",

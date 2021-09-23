@@ -130,6 +130,18 @@ class CallbackView(View):
                 "altText": "予約日を以下よりご選択ください",
                 "contents": {
                     "type": "bubble",
+                    "header": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step1_gsw8tc.png",
+                                "size": "full",
+                                "aspectRatio": "7:1"
+                            }
+                        ]
+                    },
                     "body": {
                         "type": "box",
                         "layout": "vertical",
@@ -221,7 +233,7 @@ class CallbackView(View):
         # プロフィール情報を取得
         profile = line_bot_api.get_profile(event.source.user_id)
 
-        # 予約時間を選択
+        # 予約時間を選択（yyyy-mm-dd）
         if len(event.postback.data) == 10:
 
             # 選択された予約日を追記保存
@@ -241,6 +253,18 @@ class CallbackView(View):
                 "altText": "予約時間を以下よりご選択ください",
                 "contents": {
                     "type": "bubble",
+                    "header": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step2_nbor66.png",
+                                "size": "full",
+                                "aspectRatio": "7:1"
+                            }
+                        ]
+                    },
                     "body": {
                         "type": "box",
                         "layout": "vertical",
@@ -384,7 +408,15 @@ class CallbackView(View):
             line_bot_api.push_message(profile.user_id, messages=result)
 
         # 人数を選択
-        if len(event.postback.data) == 5:
+        if event.postback.data == "11:00" \
+            or event.postback.data == "12:00" \
+            or event.postback.data == "13:00" \
+            or event.postback.data == "14:00" \
+            or event.postback.data == "15:00" \
+            or event.postback.data == "16:00" \
+            or event.postback.data == "17:00" \
+            or event.postback.data == "18:00" \
+            or event.postback.data == "19:00":
 
             # 選択された予約時間を追記保存
             array = pickle.load(open(profile.user_id, 'rb'))
@@ -403,6 +435,18 @@ class CallbackView(View):
                 "altText": "予約人数を以下よりご選択ください",
                 "contents": {
                     "type": "bubble",
+                    "header": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step3_wpinh5.png",
+                                "size": "full",
+                                "aspectRatio": "7:1"
+                            }
+                        ]
+                    },
                     "body": {
                         "type": "box",
                         "layout": "vertical",
@@ -487,7 +531,7 @@ class CallbackView(View):
             result = FlexSendMessage.new_from_json_dict(content)
             line_bot_api.push_message(profile.user_id, messages=result)
 
-        # 最終確認
+        # 最終確認（X名様）
         if len(event.postback.data) == 3:
 
             # 選択された人数を追記保存
@@ -512,6 +556,18 @@ class CallbackView(View):
                 "altText": "ご予約はこちらでお間違いないでしょうか？",
                 "contents": {
                     "type": "bubble",
+                    "header": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step4_sjezbu.png",
+                                "size": "full",
+                                "aspectRatio": "7:1"
+                            }
+                        ]
+                    },
                     "body": {
                         "type": "box",
                         "layout": "vertical",
@@ -574,7 +630,7 @@ class CallbackView(View):
             result = FlexSendMessage.new_from_json_dict(content)
             line_bot_api.push_message(profile.user_id, messages=result)
 
-        # LINE通知
+        # LINE通知（unelma用）
         if event.postback.data == "OK":
 
             # 予約情報を変数に格納
@@ -648,7 +704,7 @@ class CallbackView(View):
 
             line_bot_api.push_message("U4314fbfe96e7dd43429ddba54b3f6131", messages=result)
 
-            # メッセージを送信
+            # メッセージを送信（お客様用）
             content = {
                 "type": "flex",
                 "altText": "ご予約ありがとうございます",
@@ -683,23 +739,6 @@ class CallbackView(View):
                                 "margin": "lg",
                                 "wrap": True,
                                 "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": "cafe unelma",
-                                "size": "xs",
-                                "align": "end",
-                                "margin": "lg",
-                                "wrap": True,
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": "冨澤のぞみ",
-                                "size": "xs",
-                                "align": "end",
-                                "wrap": True,
-                                "contents": []
                             }
                         ]
                     },
@@ -717,8 +756,41 @@ class CallbackView(View):
             line_bot_api.push_message(profile.user_id, messages=result)
 
             # 予約情報のファイルを削除
-            os.remove(reservation[1])
+            try:
+                os.remove(reservation[1])
+            except FileNotFoundError:
+                print('error!')
 
         if event.postback.data == "キャンセル":
+
             # 予約情報のファイルを削除
-            os.remove(reservation[1])
+            try:
+                reservation = pickle.load(open(profile.user_id, 'rb'))
+                os.remove(reservation[1])
+            except FileNotFoundError:
+                print('error!')
+
+            # メッセージを送信（お客様用）
+            content = {
+                "type": "flex",
+                "altText": "ご予約をキャンセルしました",
+                "contents": {
+                    "type": "bubble",
+                    "direction": "ltr",
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "ご予約をキャンセルしました",
+                                "weight": "bold",
+                                "align": "center",
+                                "contents": []
+                            }
+                        ]
+                    }
+                }
+            }
+            result = FlexSendMessage.new_from_json_dict(content)
+            line_bot_api.push_message(profile.user_id, messages=result)

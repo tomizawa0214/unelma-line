@@ -13,20 +13,19 @@ from linebot.models import (
 
 )
 import os
-import re
 import pickle
 import calendar
 import datetime
+import googleapiclient.discovery
+import google.auth
 
 
-# ローカルではコメントアウト
-# CHANNEL_ACCESS_TOKEN = os.environ['CHANNEL_ACCESS_TOKEN']
-# CHANNEL_SECRET = os.environ['CHANNEL_SECRET']
+# CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"] # ローカルではコメントアウト
+# CHANNEL_SECRET = os.environ["CHANNEL_SECRET"] # ローカルではコメントアウト
 
-# line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
-# handler = WebhookHandler(CHANNEL_SECRET)
+# line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN) # ローカルではコメントアウト
+# handler = WebhookHandler(CHANNEL_SECRET) # ローカルではコメントアウト
 
-# ローカルではコメント解除
 line_bot_api = LineBotApi("LoQufLNooUro/P/XN9S9OaO8YF45+j47kIahuAzUwoF8mPO1VQQLdwgzTFRUn/qliX/Ndnd6dzKilib3F4gPQ1O4tQkNDoNl7Z57lzDZRCruOxRjKBNIERV2I3LRMvZQ8OKqj1UAdmsGPfZQEeV7iQdB04t89/1O/w1cDnyilFU=")
 handler = WebhookHandler("9a2b63f94bf6b809a34bbc2381950c9f")
 
@@ -69,14 +68,14 @@ class CallbackView(View):
             profile = line_bot_api.get_profile(event.source.user_id)
             # フックを保存
             hook = [profile.display_name, profile.user_id]
-            f = open(profile.user_id, 'wb')
+            f = open(profile.user_id, "wb")
             pickle.dump(hook, f)
             f.close()
-            print(pickle.load(open(profile.user_id, 'rb')))
+            print("予約開始")
 
             # カレンダーの取得
             def get_day_of_nth_dow(year, month, nth, dow):
-                '''dow: Monday(0) - Sunday(6)'''
+                """dow: Monday(0) - Sunday(6)"""
                 if nth < 1 or dow < 0 or dow > 6:
                     return None
 
@@ -231,6 +230,7 @@ class CallbackView(View):
 
             # プロフィール情報を取得
             profile = line_bot_api.get_profile(event.source.user_id)
+            print("メニューを表示")
 
             # メッセージを送信
             content = {
@@ -1562,175 +1562,225 @@ class CallbackView(View):
         if len(event.postback.data) == 10:
 
             # 選択された予約日を追記保存
-            array = pickle.load(open(profile.user_id, 'rb'))
-            f = open(profile.user_id, 'wb')
-            if len(array) < 3:
-                array.insert(2, event.postback.data)
-            else:
-                array[2] = event.postback.data
-            pickle.dump(array, f)
-            f.close()
-            print(pickle.load(open(profile.user_id, 'rb')))
+            try:
+                array = pickle.load(open(profile.user_id, "rb"))
+                f = open(profile.user_id, "wb")
+                if len(array) < 3:
+                    array.insert(2, event.postback.data)
+                else:
+                    array[2] = event.postback.data
+                pickle.dump(array, f)
+                f.close()
+                print("予約時間を選択")
 
-            # メッセージを送信
-            content = {
-                "type": "flex",
-                "altText": "予約時間を以下よりご選択ください。",
-                "contents": {
-                    "type": "bubble",
-                    "header": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "image",
-                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step2_nbor66.png",
-                                "size": "full",
-                                "aspectRatio": "7:1"
-                            }
-                        ]
-                    },
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "予約時間を以下よりご選択ください",
-                                "weight": "bold",
-                                "align": "center",
-                                "contents": []
-                            }
-                        ]
-                    },
-                    "footer": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "box",
-                                "layout": "horizontal",
-                                "contents": [
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "11:00～",
-                                            "displayText": "11:00～",
-                                            "data": "11:00"
+                # メッセージを送信
+                content = {
+                    "type": "flex",
+                    "altText": "予約時間を以下よりご選択ください。",
+                    "contents": {
+                        "type": "bubble",
+                        "header": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "image",
+                                    "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step2_nbor66.png",
+                                    "size": "full",
+                                    "aspectRatio": "7:1"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "予約時間を以下よりご選択ください",
+                                    "weight": "bold",
+                                    "align": "center",
+                                    "contents": []
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "11:00～",
+                                                "displayText": "11:00～",
+                                                "data": "11:00"
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "12:00～",
+                                                "displayText": "12:00～",
+                                                "data": "12:00"
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "13:00～",
+                                                "displayText": "13:00～",
+                                                "data": "13:00",
+                                            }
                                         }
-                                    },
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "12:00～",
-                                            "displayText": "12:00～",
-                                            "data": "12:00"
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "14:00～",
+                                                "displayText": "14:00～",
+                                                "data": "14:00",
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "15:00～",
+                                                "displayText": "15:00～",
+                                                "data": "15:00",
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "16:00～",
+                                                "displayText": "16:00～",
+                                                "data": "16:00",
+                                            }
                                         }
-                                    },
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "13:00～",
-                                            "displayText": "13:00～",
-                                            "data": "13:00",
+                                    ]
+                                },
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "17:00～",
+                                                "displayText": "17:00～",
+                                                "data": "17:00",
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "18:00～",
+                                                "displayText": "18:00～",
+                                                "data": "18:00",
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "19:00～",
+                                                "displayText": "19:00～",
+                                                "data": "19:00",
+                                            }
                                         }
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "box",
-                                "layout": "horizontal",
-                                "contents": [
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "14:00～",
-                                            "displayText": "14:00～",
-                                            "data": "14:00",
-                                        }
-                                    },
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "15:00～",
-                                            "displayText": "15:00～",
-                                            "data": "15:00",
-                                        }
-                                    },
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "16:00～",
-                                            "displayText": "16:00～",
-                                            "data": "16:00",
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "box",
-                                "layout": "horizontal",
-                                "contents": [
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "17:00～",
-                                            "displayText": "17:00～",
-                                            "data": "17:00",
-                                        }
-                                    },
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "18:00～",
-                                            "displayText": "18:00～",
-                                            "data": "18:00",
-                                        }
-                                    },
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "19:00～",
-                                            "displayText": "19:00～",
-                                            "data": "19:00",
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "separator",
-                                "margin": "xxl"
-                            },
-                            {
-                                "type": "text",
-                                "text": "※ご予約は1時間単位とさせていただいております。",
-                                "size": "xxs",
-                                "margin": "md",
-                                "wrap": True,
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": "※上記時間以外をご希望の場合はMENUのお問い合わせよりお申し付けください。",
-                                "size": "xxs",
-                                "wrap": True,
-                                "contents": []
-                            }
-                        ]
+                                    ]
+                                },
+                                {
+                                    "type": "separator",
+                                    "margin": "xxl"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "※ご予約は1時間単位とさせていただいております。",
+                                    "size": "xxs",
+                                    "margin": "md",
+                                    "wrap": True,
+                                    "contents": []
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "※上記時間以外をご希望の場合はMENUのお問い合わせよりお申し付けください。",
+                                    "size": "xxs",
+                                    "wrap": True,
+                                    "contents": []
+                                }
+                            ]
+                        }
                     }
                 }
-            }
-            result = FlexSendMessage.new_from_json_dict(content)
-            line_bot_api.push_message(profile.user_id, messages=result)
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
+            except FileNotFoundError:
+                print("error!")
+                # メッセージを送信
+                content = {
+                    "type": "flex",
+                    "altText": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                    "contents": {
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                                    "weight": "bold",
+                                    "color": "#FF0000",
+                                    "align": "start",
+                                    "wrap": True,
+                                    "contents": []
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "message",
+                                                "label": "予約する",
+                                                "text": "予約"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
+                
 
         # 人数を選択
         if event.postback.data == "11:00" \
@@ -1743,379 +1793,1213 @@ class CallbackView(View):
             or event.postback.data == "18:00" \
             or event.postback.data == "19:00":
 
-            # 選択された予約時間を追記保存
-            array = pickle.load(open(profile.user_id, 'rb'))
-            f = open(profile.user_id, 'wb')
-            if len(array) < 4:
-                array.insert(3, event.postback.data)
-            else:
-                array[3] = event.postback.data
-            pickle.dump(array, f)
-            f.close()
-            print(pickle.load(open(profile.user_id, 'rb')))
+            try:
+                # 選択された予約時間を追記保存
+                array = pickle.load(open(profile.user_id, "rb"))
+                f = open(profile.user_id, "wb")
+                if len(array) < 4:
+                    array.insert(3, event.postback.data)
+                else:
+                    array[3] = event.postback.data
+                pickle.dump(array, f)
+                f.close()
+                print("予約人数を選択")
 
-            # メッセージを送信
-            content = {
-                "type": "flex",
-                "altText": "予約人数を以下よりご選択ください。",
-                "contents": {
-                    "type": "bubble",
-                    "header": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "image",
-                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step3_wpinh5.png",
-                                "size": "full",
-                                "aspectRatio": "7:1"
-                            }
-                        ]
-                    },
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "予約人数を以下よりご選択ください",
-                                "weight": "bold",
-                                "align": "center",
-                                "contents": []
-                            }
-                        ]
-                    },
-                    "footer": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
+                # 編集スコープの設定(読み書き両方OKの設定)
+                SCOPES = ["https://www.googleapis.com/auth/calendar"]
+                # カレンダーIDの設定
+                calendar_id = "cafe.unelma@gmail.com"
+                # calendar_id = os.environ["MAIL"]
+                # 認証ファイルを使用して認証用オブジェクトを作成
+                gapi_creds = google.auth.load_credentials_from_file("credentials.json", SCOPES)[0]
+                # 認証用オブジェクトを使用してAPIを呼び出すためのオブジェクト作成
+                service = googleapiclient.discovery.build("calendar", "v3", credentials=gapi_creds)
+
+                # 予約の重複を確認
+                events_result = service.events().list(
+                    calendarId=calendar_id,
+                    timeMin=f"{array[2]}T00:00:00+00:00",
+                    singleEvents=True,
+                    orderBy="startTime"
+                ).execute()
+                events = events_result.get("items", [])
+
+                availability = ["default"]
+                for appointment in events:
+                    start = appointment["start"].get("dateTime", appointment["start"].get("date"))
+                    if f"{array[2]}T{array[3]}" in start:
+                        availability.append("no")
+                    else:
+                        availability.append("yes")
+
+                # メッセージを送信（予約不可の場合）
+                if "no" in availability:
+                    print("選択された日時の予約はできません。")
+                    content = {
+                        "type": "flex",
+                        "altText": "大変申し訳ございません。予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                        "contents": {
+                            "type": "bubble",
+                            "header": {
                                 "type": "box",
-                                "layout": "horizontal",
+                                "layout": "vertical",
                                 "contents": [
                                     {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "1名様",
-                                            "text": "1名様",
-                                            "data": "1名様"
-                                        }
+                                        "type": "text",
+                                        "text": "大変申し訳ございません。",
+                                        "weight": "bold",
+                                        "color": "#FF0000",
+                                        "align": "start",
+                                        "wrap": True,
+                                        "contents": []
                                     },
                                     {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "2名様",
-                                            "text": "2名様",
-                                            "data": "2名様"
-                                        }
+                                        "type": "text",
+                                        "text": "予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                                        "weight": "bold",
+                                        "color": "#FF0000",
+                                        "align": "start",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "image",
+                                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step2_nbor66.png",
+                                        "margin": "xl",
+                                        "size": "full",
+                                        "aspectRatio": "7:1"
                                     }
                                 ]
                             },
-                            {
+                            "body": {
                                 "type": "box",
-                                "layout": "horizontal",
+                                "layout": "vertical",
                                 "contents": [
                                     {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "3名様",
-                                            "text": "3名様",
-                                            "data": "3名様"
-                                        }
-                                    },
-                                    {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "4名様",
-                                            "text": "4名様",
-                                            "data": "4名様"
-                                        }
+                                        "type": "text",
+                                        "text": "予約時間を以下よりご選択ください",
+                                        "weight": "bold",
+                                        "align": "center",
+                                        "contents": []
                                     }
                                 ]
                             },
-                            {
-                                "type": "separator",
-                                "margin": "xxl"
-                            },
-                            {
-                                "type": "text",
-                                "text": "※5名様以上をご希望の場合はMENUのお問い合わせよりお申し付けください。",
-                                "size": "xxs",
-                                "margin": "md",
-                                "wrap": True,
-                                "contents": []
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "11:00～",
+                                                    "displayText": "11:00～",
+                                                    "data": "11:00"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "12:00～",
+                                                    "displayText": "12:00～",
+                                                    "data": "12:00"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "13:00～",
+                                                    "displayText": "13:00～",
+                                                    "data": "13:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "14:00～",
+                                                    "displayText": "14:00～",
+                                                    "data": "14:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "15:00～",
+                                                    "displayText": "15:00～",
+                                                    "data": "15:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "16:00～",
+                                                    "displayText": "16:00～",
+                                                    "data": "16:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "17:00～",
+                                                    "displayText": "17:00～",
+                                                    "data": "17:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "18:00～",
+                                                    "displayText": "18:00～",
+                                                    "data": "18:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "19:00～",
+                                                    "displayText": "19:00～",
+                                                    "data": "19:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "separator",
+                                        "margin": "xxl"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※ご予約は1時間単位とさせていただいております。",
+                                        "size": "xxs",
+                                        "margin": "md",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※上記時間以外をご希望の場合はMENUのお問い合わせよりお申し付けください。",
+                                        "size": "xxs",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
                             }
-                        ]
+                        }
+                    }
+                # メッセージを送信（予約可能の場合）
+                else:
+                    print("選択された日時の予約が可能です。")
+                    content = {
+                        "type": "flex",
+                        "altText": "予約人数を以下よりご選択ください。",
+                        "contents": {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "image",
+                                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step3_wpinh5.png",
+                                        "size": "full",
+                                        "aspectRatio": "7:1"
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "予約人数を以下よりご選択ください",
+                                        "weight": "bold",
+                                        "align": "center",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "1名様",
+                                                    "text": "1名様",
+                                                    "data": "1名様"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "2名様",
+                                                    "text": "2名様",
+                                                    "data": "2名様"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "3名様",
+                                                    "text": "3名様",
+                                                    "data": "3名様"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "4名様",
+                                                    "text": "4名様",
+                                                    "data": "4名様"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "separator",
+                                        "margin": "xxl"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※5名様以上をご希望の場合はMENUのお問い合わせよりお申し付けください。",
+                                        "size": "xxs",
+                                        "margin": "md",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
+            except FileNotFoundError:
+                print("error!")
+                # メッセージを送信
+                content = {
+                    "type": "flex",
+                    "altText": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                    "contents": {
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                                    "weight": "bold",
+                                    "color": "#FF0000",
+                                    "align": "start",
+                                    "wrap": True,
+                                    "contents": []
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "message",
+                                                "label": "予約する",
+                                                "text": "予約"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }
-            }
-            result = FlexSendMessage.new_from_json_dict(content)
-            line_bot_api.push_message(profile.user_id, messages=result)
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
 
         # 最終確認（X名様）
         if len(event.postback.data) == 3:
 
-            # 選択された人数を追記保存
-            array = pickle.load(open(profile.user_id, 'rb'))
-            f = open(profile.user_id, 'wb')
-            if len(array) < 5:
-                array.insert(4, event.postback.data)
-            else:
-                array[4] = event.postback.data
-            pickle.dump(array, f)
-            f.close()
-            reservation = pickle.load(open(profile.user_id, 'rb'))
-            print(pickle.load(open(profile.user_id, 'rb')))
+            try:
+                # 選択された人数を追記保存
+                array = pickle.load(open(profile.user_id, "rb"))
+                f = open(profile.user_id, "wb")
+                if len(array) < 5:
+                    array.insert(4, event.postback.data)
+                else:
+                    array[4] = event.postback.data
+                pickle.dump(array, f)
+                f.close()
+                reservation = pickle.load(open(profile.user_id, "rb"))
+                print("予約内容の確認")
 
-            # 予約日を月日に変換
-            reservation_date = reservation[2][5:].replace("-", "月").lstrip("0") + "日(木)"
-            print(reservation_date)
+                # 予約日を月日に変換
+                reservation_date = reservation[2][5:].replace("-", "月").lstrip("0") + "日(木)"
 
-            # メッセージを送信
-            content = {
-                "type": "flex",
-                "altText": "ご予約はこちらでお間違いないでしょうか？",
-                "contents": {
-                    "type": "bubble",
-                    "header": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "image",
-                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step4_sjezbu.png",
-                                "size": "full",
-                                "aspectRatio": "7:1"
-                            }
-                        ]
-                    },
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "こちらでお間違いないでしょうか？",
-                                "weight": "bold",
-                                "align": "center",
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": f"お名前　 ：{reservation[0]}様",
-                                "margin": "xxl",
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": f"予約日　 ：{reservation_date}　{reservation[3]}～",
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": f"予約人数 ：{reservation[4]}",
-                                "contents": []
-                            }
-                        ]
-                    },
-                    "footer": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
+                # 編集スコープの設定(読み書き両方OKの設定)
+                SCOPES = ["https://www.googleapis.com/auth/calendar"]
+                # カレンダーIDの設定
+                calendar_id = "cafe.unelma@gmail.com"
+                # calendar_id = os.environ["MAIL"]
+                # 認証ファイルを使用して認証用オブジェクトを作成
+                gapi_creds = google.auth.load_credentials_from_file("credentials.json", SCOPES)[0]
+                # 認証用オブジェクトを使用してAPIを呼び出すためのオブジェクト作成
+                service = googleapiclient.discovery.build("calendar", "v3", credentials=gapi_creds)
+
+                # 予約の重複を確認
+                events_result = service.events().list(
+                    calendarId=calendar_id,
+                    timeMin=f"{array[2]}T00:00:00+00:00",
+                    singleEvents=True,
+                    orderBy="startTime"
+                ).execute()
+                events = events_result.get("items", [])
+
+                availability = ["default"]
+                for appointment in events:
+                    start = appointment["start"].get("dateTime", appointment["start"].get("date"))
+                    if f"{array[2]}T{array[3]}" in start:
+                        availability.append("no")
+                    else:
+                        availability.append("yes")
+
+                # メッセージを送信（予約不可の場合）
+                if "no" in availability:
+                    print("選択された日時の予約はできません。")
+                    content = {
+                        "type": "flex",
+                        "altText": "大変申し訳ございません。予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                        "contents": {
+                            "type": "bubble",
+                            "header": {
                                 "type": "box",
-                                "layout": "horizontal",
+                                "layout": "vertical",
                                 "contents": [
                                     {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "OK",
-                                            "data": "OK"
-                                        }
+                                        "type": "text",
+                                        "text": "大変申し訳ございません。",
+                                        "weight": "bold",
+                                        "color": "#FF0000",
+                                        "align": "start",
+                                        "wrap": True,
+                                        "contents": []
                                     },
                                     {
-                                        "type": "button",
-                                        "action": {
-                                            "type": "postback",
-                                            "label": "キャンセル",
-                                            "data": "キャンセル"
-                                        }
+                                        "type": "text",
+                                        "text": "予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                                        "weight": "bold",
+                                        "color": "#FF0000",
+                                        "align": "start",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "image",
+                                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step2_nbor66.png",
+                                        "margin": "xl",
+                                        "size": "full",
+                                        "aspectRatio": "7:1"
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "予約時間を以下よりご選択ください",
+                                        "weight": "bold",
+                                        "align": "center",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "11:00～",
+                                                    "displayText": "11:00～",
+                                                    "data": "11:00"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "12:00～",
+                                                    "displayText": "12:00～",
+                                                    "data": "12:00"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "13:00～",
+                                                    "displayText": "13:00～",
+                                                    "data": "13:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "14:00～",
+                                                    "displayText": "14:00～",
+                                                    "data": "14:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "15:00～",
+                                                    "displayText": "15:00～",
+                                                    "data": "15:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "16:00～",
+                                                    "displayText": "16:00～",
+                                                    "data": "16:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "17:00～",
+                                                    "displayText": "17:00～",
+                                                    "data": "17:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "18:00～",
+                                                    "displayText": "18:00～",
+                                                    "data": "18:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "19:00～",
+                                                    "displayText": "19:00～",
+                                                    "data": "19:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "separator",
+                                        "margin": "xxl"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※ご予約は1時間単位とさせていただいております。",
+                                        "size": "xxs",
+                                        "margin": "md",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※上記時間以外をご希望の場合はMENUのお問い合わせよりお申し付けください。",
+                                        "size": "xxs",
+                                        "wrap": True,
+                                        "contents": []
                                     }
                                 ]
                             }
-                        ]
+                        }
+                    }
+                # メッセージを送信（予約可能の場合）
+                else:
+                    content = {
+                        "type": "flex",
+                        "altText": "ご予約はこちらでお間違いないでしょうか？",
+                        "contents": {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "image",
+                                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step4_sjezbu.png",
+                                        "size": "full",
+                                        "aspectRatio": "7:1"
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "こちらでお間違いないでしょうか？",
+                                        "weight": "bold",
+                                        "align": "center",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"お名前　 ：{reservation[0]}様",
+                                        "margin": "xxl",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"予約日　 ：{reservation_date}　{reservation[3]}～",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"予約人数 ：{reservation[4]}",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "OK",
+                                                "data": "OK"
+                                            }
+                                        },
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "postback",
+                                                "label": "キャンセル",
+                                                "data": "キャンセル"
+                                            }
+                                        }
+                                        ]
+                                    },
+                                    {
+                                        "type": "separator",
+                                        "margin": "lg"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※連続でタップするとエラーメッセージが表示されますのでご注意ください。ご予約通知が届いていればご予約は完了しております。",
+                                        "size": "xs",
+                                        "margin": "md",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
+            except FileNotFoundError:
+                print("error!")
+                # メッセージを送信
+                content = {
+                    "type": "flex",
+                    "altText": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                    "contents": {
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                                    "weight": "bold",
+                                    "color": "#FF0000",
+                                    "align": "start",
+                                    "wrap": True,
+                                    "contents": []
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "message",
+                                                "label": "予約する",
+                                                "text": "予約"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
                     }
                 }
-            }
-            result = FlexSendMessage.new_from_json_dict(content)
-            line_bot_api.push_message(profile.user_id, messages=result)
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
 
         # LINE通知（unelma用）
         if event.postback.data == "OK":
 
             # 予約情報を変数に格納
-            reservation = pickle.load(open(profile.user_id, 'rb'))
-            print(reservation)
-
-            # 予約日を月日に変換
-            reservation[2] = reservation[2][5:].replace("-", "月").lstrip("0") + "日(木)"
-            print(reservation)
-
-            # unelmaへメッセージを送信
-            content = {
-                "type": "flex",
-                "altText": "cafe unelmaの予約を受け付けました！",
-                "contents": {
-                    "type": "bubble",
-                    "hero": {
-                        "type": "image",
-                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632096188/cafe%20unelma/cafe-unelma_%E3%83%AD%E3%82%B4_p9w5ta.png",
-                        "size": "5xl",
-                        "aspectRatio": "1.51:1",
-                        "aspectMode": "fit",
-                        "position": "relative",
-                        "offsetTop": "20px"
-                    },
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "以下予約を受け付けました！",
-                                "weight": "bold",
-                                "align": "center",
-                                "margin": "xxl",
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": f"お名前　 ：{reservation[0]}様",
-                                "margin": "xxl",
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": f"予約日　 ：{reservation[2]}　{reservation[3]}～",
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": f"予約人数 ：{reservation[4]}",
-                                "contents": []
-                            }
-                        ]
-                    },
-                    "styles": {
-                        "hero": {
-                            "backgroundColor": "#F2ECDD"
-                        },
-                        "body": {
-                            "backgroundColor": "#F2ECDD"
-                        }
-                    }
-                }
-            }
-            result = FlexSendMessage.new_from_json_dict(content)
-
-            # ローカルではコメントアウト
-            # PUSH_USER_ID = os.environ['PUSH_USER_ID']
-            # line_bot_api.push_message(PUSH_USER_ID, messages=result)
-
-            line_bot_api.push_message("U4314fbfe96e7dd43429ddba54b3f6131", messages=result)
-
-            # メッセージを送信（お客様用）
-            content = {
-                "type": "flex",
-                "altText": "ご予約ありがとうございます。",
-                "contents": {
-                    "type": "bubble",
-                    "hero": {
-                        "type": "image",
-                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632096188/cafe%20unelma/cafe-unelma_%E3%83%AD%E3%82%B4_p9w5ta.png",
-                        "size": "5xl",
-                        "aspectRatio": "1.51:1",
-                        "aspectMode": "fit",
-                        "position": "relative",
-                        "offsetTop": "20px"
-                    },
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": f"ご予約ありがとうございます！{reservation[0]}様のお越しを心よりお待ちしております。",
-                                "weight": "bold",
-                                "align": "center",
-                                "margin": "xxl",
-                                "contents": []
-                            },
-                            {
-                                "type": "text",
-                                "text": f"{reservation[0]}様のお越しを心よりお待ちしております。当日はお気をつけてお越しくださいませ。",
-                                "size": "sm",
-                                "align": "start",
-                                "margin": "lg",
-                                "wrap": True,
-                                "contents": []
-                            }
-                        ]
-                    },
-                    "styles": {
-                        "hero": {
-                            "backgroundColor": "#F2ECDD"
-                        },
-                        "body": {
-                            "backgroundColor": "#F2ECDD"
-                        }
-                    }
-                }
-            }
-            result = FlexSendMessage.new_from_json_dict(content)
-            line_bot_api.push_message(profile.user_id, messages=result)
-
-            # 予約情報のファイルを削除
             try:
-                os.remove(reservation[1])
+                reservation = pickle.load(open(profile.user_id, "rb"))
+
+                # 予約日を月日に変換
+                reservation_date = reservation[2][5:].replace("-", "月").lstrip("0") + "日(木)"
+
+                # 編集スコープの設定(読み書き両方OKの設定)
+                SCOPES = ["https://www.googleapis.com/auth/calendar"]
+                # カレンダーIDの設定
+                calendar_id = "cafe.unelma@gmail.com"
+                # calendar_id = os.environ["MAIL"]
+                # 認証ファイルを使用して認証用オブジェクトを作成
+                gapi_creds = google.auth.load_credentials_from_file("credentials.json", SCOPES)[0]
+                # 認証用オブジェクトを使用してAPIを呼び出すためのオブジェクト作成
+                service = googleapiclient.discovery.build("calendar", "v3", credentials=gapi_creds)
+
+                # 予約の重複を確認
+                events_result = service.events().list(
+                    calendarId=calendar_id,
+                    timeMin=f"{reservation[2]}T00:00:00+00:00",
+                    singleEvents=True,
+                    orderBy="startTime"
+                ).execute()
+                events = events_result.get("items", [])
+
+                availability = ["default"]
+                for appointment in events:
+                    start = appointment["start"].get("dateTime", appointment["start"].get("date"))
+                    if f"{reservation[2]}T{reservation[3]}" in start:
+                        availability.append("no")
+                    else:
+                        availability.append("yes")
+
+                # メッセージを送信（予約不可の場合）
+                if "no" in availability:
+                    print("選択された日時の予約はできません。")
+                    content = {
+                        "type": "flex",
+                        "altText": "大変申し訳ございません。予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                        "contents": {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "大変申し訳ございません。",
+                                        "weight": "bold",
+                                        "color": "#FF0000",
+                                        "align": "start",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                                        "weight": "bold",
+                                        "color": "#FF0000",
+                                        "align": "start",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "image",
+                                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632133381/cafe%20unelma/step2_nbor66.png",
+                                        "margin": "xl",
+                                        "size": "full",
+                                        "aspectRatio": "7:1"
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "予約時間を以下よりご選択ください",
+                                        "weight": "bold",
+                                        "align": "center",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "11:00～",
+                                                    "displayText": "11:00～",
+                                                    "data": "11:00"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "12:00～",
+                                                    "displayText": "12:00～",
+                                                    "data": "12:00"
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "13:00～",
+                                                    "displayText": "13:00～",
+                                                    "data": "13:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "14:00～",
+                                                    "displayText": "14:00～",
+                                                    "data": "14:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "15:00～",
+                                                    "displayText": "15:00～",
+                                                    "data": "15:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "16:00～",
+                                                    "displayText": "16:00～",
+                                                    "data": "16:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "17:00～",
+                                                    "displayText": "17:00～",
+                                                    "data": "17:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "18:00～",
+                                                    "displayText": "18:00～",
+                                                    "data": "18:00",
+                                                }
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "postback",
+                                                    "label": "19:00～",
+                                                    "displayText": "19:00～",
+                                                    "data": "19:00",
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "separator",
+                                        "margin": "xxl"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※ご予約は1時間単位とさせていただいております。",
+                                        "size": "xxs",
+                                        "margin": "md",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※上記時間以外をご希望の場合はMENUのお問い合わせよりお申し付けください。",
+                                        "size": "xxs",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                # メッセージを送信（予約可能の場合）
+                else:
+                    # 取得済みの日時をdateオブジェクトに変換
+                    tstr = f"{reservation[2]} {reservation[3]}:00"
+                    tdatetime = datetime.datetime.strptime(tstr, '%Y-%m-%d %H:%M:%S')
+
+                    register = {
+                        # タイトル
+                        "summary": f"{reservation[0]}様",
+                        # 概要文
+                        "description" : f"人数：{reservation[4]}",
+                        # 開始時刻
+                        "start": {
+                            "dateTime": datetime.datetime(tdatetime.year, tdatetime.month, tdatetime.day, tdatetime.hour, 00).isoformat(),
+                            "timeZone": "Japan"
+                        },
+                        # 終了時刻
+                        "end": {
+                            "dateTime": datetime.datetime(tdatetime.year, tdatetime.month, tdatetime.day, tdatetime.hour+2, 00).isoformat(),
+                            "timeZone": "Japan"
+                        }
+                    }
+
+                    # カレンダーに予定を登録
+                    service.events().insert(calendarId=calendar_id, body=register).execute()
+
+                    # unelmaへメッセージを送信
+                    content = {
+                        "type": "flex",
+                        "altText": "cafe unelmaの予約を受け付けました！",
+                        "contents": {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "image",
+                                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632096188/cafe%20unelma/cafe-unelma_%E3%83%AD%E3%82%B4_p9w5ta.png",
+                                        "size": "3xl"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "以下予約を受け付けました！",
+                                        "weight": "bold",
+                                        "align": "center",
+                                        "margin": "xxl",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"お名前　 ：{reservation[0]}様",
+                                        "margin": "xxl",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"予約日　 ：{reservation_date}　{reservation[3]}～",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"予約人数 ：{reservation[4]}",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "hero": {
+                                    "backgroundColor": "#F2ECDD"
+                                },
+                                "body": {
+                                    "backgroundColor": "#F2ECDD"
+                                }
+                            }
+                        }
+                    }
+                    result = FlexSendMessage.new_from_json_dict(content)
+
+                    # PUSH_USER_ID = os.environ["PUSH_USER_ID"] # ローカルではコメントアウト
+                    # line_bot_api.push_message(PUSH_USER_ID, messages=result) # ローカルではコメントアウト
+
+                    line_bot_api.push_message("U4314fbfe96e7dd43429ddba54b3f6131", messages=result)
+
+                    # メッセージを送信（お客様用）
+                    content = {
+                        "type": "flex",
+                        "altText": "ご予約ありがとうございます。",
+                        "contents": {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "image",
+                                        "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632096188/cafe%20unelma/cafe-unelma_%E3%83%AD%E3%82%B4_p9w5ta.png",
+                                        "size": "3xl"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"ご予約ありがとうございます！",
+                                        "weight": "bold",
+                                        "align": "center",
+                                        "margin": "xxl",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": f"{reservation[0]}様のお越しを心よりお待ちしております。当日はお気をつけてお越しくださいませ。",
+                                        "size": "sm",
+                                        "align": "start",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "hero": {
+                                    "backgroundColor": "#F2ECDD"
+                                },
+                                "body": {
+                                    "backgroundColor": "#F2ECDD"
+                                }
+                            }
+                        }
+                    }
+                    # 予約情報のファイルを削除
+                    os.remove(reservation[1])
+
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
             except FileNotFoundError:
-                print('error!')
+                print("error!")
+                # メッセージを送信
+                content = {
+                    "type": "flex",
+                    "altText": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                    "contents": {
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                                    "weight": "bold",
+                                    "color": "#FF0000",
+                                    "align": "start",
+                                    "wrap": True,
+                                    "contents": []
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "message",
+                                                "label": "予約する",
+                                                "text": "予約"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
 
         if event.postback.data == "キャンセル":
 
-            # 予約情報のファイルを削除
             try:
-                reservation = pickle.load(open(profile.user_id, 'rb'))
+                # 予約情報のファイルを削除
+                reservation = pickle.load(open(profile.user_id, "rb"))
                 os.remove(reservation[1])
-            except FileNotFoundError:
-                print('error!')
 
-            # メッセージを送信（お客様用）
-            content = {
-                "type": "flex",
-                "altText": "ご予約をキャンセルしました",
-                "contents": {
-                    "type": "bubble",
-                    "direction": "ltr",
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "text",
-                                "text": "ご予約をキャンセルしました",
-                                "weight": "bold",
-                                "align": "center",
-                                "contents": []
-                            }
-                        ]
+                # メッセージを送信（お客様用）
+                content = {
+                    "type": "flex",
+                    "altText": "ご予約をキャンセルしました",
+                    "contents": {
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "ご予約をキャンセルしました",
+                                    "weight": "bold",
+                                    "align": "center",
+                                    "contents": []
+                                }
+                            ]
+                        }
                     }
                 }
-            }
-            result = FlexSendMessage.new_from_json_dict(content)
-            line_bot_api.push_message(profile.user_id, messages=result)
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)
+            except FileNotFoundError:
+                print("error!")
+                # メッセージを送信
+                content = {
+                    "type": "flex",
+                    "altText": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                    "contents": {
+                        "type": "bubble",
+                        "direction": "ltr",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "前回の選択から時間が経過したため、大変お手数ですが再度ご予約をお願いいたします。",
+                                    "weight": "bold",
+                                    "color": "#FF0000",
+                                    "align": "start",
+                                    "wrap": True,
+                                    "contents": []
+                                }
+                            ]
+                        },
+                        "footer": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "box",
+                                    "layout": "horizontal",
+                                    "contents": [
+                                        {
+                                            "type": "button",
+                                            "action": {
+                                                "type": "message",
+                                                "label": "予約する",
+                                                "text": "予約"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                }
+                result = FlexSendMessage.new_from_json_dict(content)
+                line_bot_api.push_message(profile.user_id, messages=result)

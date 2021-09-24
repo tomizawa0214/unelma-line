@@ -127,7 +127,7 @@ class CallbackView(View):
             # メッセージを送信
             content = {
                 "type": "flex",
-                "altText": "予約日を以下よりご選択ください",
+                "altText": "予約日を以下よりご選択ください。",
                 "contents": {
                     "type": "bubble",
                     "header": {
@@ -226,6 +226,1331 @@ class CallbackView(View):
             result = FlexSendMessage.new_from_json_dict(content)
             line_bot_api.push_message(profile.user_id, messages=result)
 
+        # メニューのカルーセル出力
+        if text == "メニュー":
+
+            # プロフィール情報を取得
+            profile = line_bot_api.get_profile(event.source.user_id)
+
+            # メッセージを送信
+            content = {
+                "type": "flex",
+                "altText": "cafe unelmaのFOOD & DRINKメニューです。",
+                "contents": {
+                    "type": "carousel",
+                    "contents": [
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436431/cafe%20unelma/%E3%82%AD%E3%83%83%E3%82%B7%E3%83%A5_yrwqdy.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "キッシュサラダプレート",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥920",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "手づくりキッシュと大きいソーセージがのった、野菜をたっぷり食べるプレートです。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "※キッシュの内容は日替わりです。",
+                                        "size": "xxs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "※スープやサラダは旬の野菜を使用するので、写真と異なる場合がございます。",
+                                        "size": "xxs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "footer": {
+                                    "separator": True
+                                }
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436431/cafe%20unelma/%E3%82%AD%E3%83%BC%E3%83%9E%E3%82%AB%E3%83%AC%E3%83%BC_qh4qzc.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "無水キーマカレープレート",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥1,020",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "野菜の水分だけで作りました。野菜の甘みがつまった中辛カレーです。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "お子様用に甘口に変更もOK！ごはん大盛も無料です。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "※スープやサラダ等は旬の野菜を使用するので、写真と異なる場合がございます。",
+                                        "size": "xxs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "footer": {
+                                    "separator": True
+                                }
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436431/cafe%20unelma/%E3%82%A2%E3%83%92%E3%83%BC%E3%82%B8%E3%83%A7_u6cfrk.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "お野菜アヒージョプレート",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥1,100",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "旬のお野菜を使った日替わりのアヒージョ！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "スペアリブものった、がっつり食べたい人にオススメ！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "※バケットのおかわりは+120円です。",
+                                        "size": "xxs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "footer": {
+                                    "separator": True
+                                }
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "flex": 0,
+                                "backgroundColor": "#109972",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "TOPPING!",
+                                        "weight": "bold",
+                                        "size": "xxl",
+                                        "color": "#FFFFFF",
+                                        "align": "center",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "spacing": "md",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "チーズ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "チーズ"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "｜カレーにオススメ！",
+                                                        "size": "xs",
+                                                        "weight": "regular"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥50",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "やさい増し",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "start",
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥100",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "ソーセージ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "ソーセージ"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（1本）",
+                                                        "size": "xs",
+                                                        "weight": "regular"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥100",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "スペアリブ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "スペアリブ"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（1個）",
+                                                        "size": "xs",
+                                                        "weight": "regular"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥150",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "バケット",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "バケット"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（3枚）",
+                                                        "size": "xs",
+                                                        "weight": "regular"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥120",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436431/cafe%20unelma/%E3%82%AB%E3%83%9C%E3%83%81%E3%83%A3%E3%83%81%E3%83%BC%E3%82%BA%E3%82%B1%E3%83%BC%E3%82%AD_pxjdug.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "かぼちゃとゴルゴンゾーラのベイクドチーズケーキ",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥500",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "それぞれの素材を活かした甘さ控えめのケーキです。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "ハチミツと黒こしょうをお好みでかけてお召し上がりください！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436431/cafe%20unelma/%E3%82%A2%E3%83%9C%E3%82%AB%E3%83%89%E3%83%90%E3%83%8A%E3%83%8A%E3%83%A2%E3%83%B3%E3%83%96%E3%83%A9%E3%83%B3_jgurno.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "アボカドバナナモンブラン",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥400",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "手づくりアーモンド生地にバナナとたっぷりのアボカドクリームがのっています。しっかり濃厚！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436432/cafe%20unelma/%E9%BB%92%E3%82%B4%E3%83%9E%E3%83%96%E3%83%A9%E3%83%B3%E3%83%9E%E3%83%B3%E3%82%B8%E3%82%A7_mpprh2.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "黒ごまブランマンジェ",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥400",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "栄養価が高い黒ごまをたっぷりと使用した香り高いブランマンジェです。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "flex": 0,
+                                "backgroundColor": "#F2AAC1",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "DESSERT",
+                                        "weight": "bold",
+                                        "size": "xxl",
+                                        "color": "#FFFFFF",
+                                        "align": "center",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "spoonの手づくりジェラート",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥330",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "高崎イオン近くにある大人気ジェラート！！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "内容は日替わりです。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "デザート2種もり",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥600",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "少し小さめサイズのジェラートとお好きなデザートのお得なもり合わせ",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "デザート3種もり",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥850",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "お好きなデザートを3つお選びください。少し小さめサイズでご用意いたします。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436431/cafe%20unelma/%E3%83%89%E3%83%A9%E3%82%A4%E3%82%AA%E3%83%AC%E3%83%B3%E3%82%B8%E3%83%86%E3%82%A3%E3%83%BC_gzmuf1.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "ドライオレンジティー",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "wrap": True,
+                                        "contents": [
+                                            {
+                                                "type": "span",
+                                                "text": "ドライオレンジティー"
+                                            },
+                                            {
+                                                "type": "span",
+                                                "text": "（Hot）",
+                                                "size": "xs"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥450",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "高崎市にある、愛媛明浜みかん専門店のスリーサンズさんより入荷！！みかんそのままの甘さが際立ちます。まずは半分、そのままで食べてみてください！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "ドライオレンジは店内でも販売しています！",
+                                        "size": "xxs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "footer": {
+                                    "separator": True
+                                }
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "hero": {
+                                "type": "image",
+                                "url": "https://res.cloudinary.com/dfnnruqnc/image/upload/v1632436432/cafe%20unelma/%E6%9F%91%E6%A9%98%E3%82%BD%E3%83%BC%E3%83%80_mwthq5.jpg",
+                                "size": "full"
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "自家製かんきつシロップソーダ",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "￥400",
+                                        "weight": "bold",
+                                        "size": "lg",
+                                        "align": "end",
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "フレッシュなかんきつと旨味のあるミニトマトをシロップ漬けにしました。甘酸っぱいさわやかなドリンクです。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "margin": "lg",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "※かんきつは時期により変更致します。",
+                                        "size": "xxs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "styles": {
+                                "footer": {
+                                    "separator": True
+                                }
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "flex": 0,
+                                "backgroundColor": "#7B5544",
+                                "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "COFFEE",
+                                    "weight": "bold",
+                                    "size": "xxl",
+                                    "color": "#FFFFFF",
+                                    "align": "center",
+                                    "contents": []
+                                }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "ハンドドリップコーヒー",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "ハンドドリップコーヒー"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（Hot / Ice）",
+                                                        "size": "xs",
+                                                        "weight": "regular"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥450",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "前橋にあるSAMURAI COFFEEさんの深煎りフレンチ豆を使用しています。一杯ずつじっくりハンドドリップいたします！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "カフェオレ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥550",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "ソイオレ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                {
+                                                    "type": "span",
+                                                    "text": "ソイオレ"
+                                                },
+                                                {
+                                                    "type": "span",
+                                                    "text": "（Hot / Ice）",
+                                                    "size": "xs",
+                                                    "weight": "regular"
+                                                }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥550",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "玄米コーヒー",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                {
+                                                    "type": "span",
+                                                    "text": "玄米コーヒー"
+                                                },
+                                                {
+                                                    "type": "span",
+                                                    "text": "（Hot / Ice）",
+                                                    "size": "xs",
+                                                    "weight": "regular"
+                                                }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥450",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "話題のノンカフェインコーヒーです。",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "コーヒーに負けないコクもありつつ、玄米の香ばしい香りも楽しめます！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "玄米カフェオレ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥550",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "玄米ソイオレ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                {
+                                                    "type": "span",
+                                                    "text": "玄米ソイオレ"
+                                                },
+                                                {
+                                                    "type": "span",
+                                                    "text": "（Hot / Ice）",
+                                                    "size": "xs",
+                                                    "weight": "regular"
+                                                }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥550",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "header": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "flex": 0,
+                                "backgroundColor": "#BD611E",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "DRINK",
+                                        "weight": "bold",
+                                        "size": "xxl",
+                                        "color": "#FFFFFF",
+                                        "align": "center",
+                                        "contents": []
+                                    }
+                                ]
+                            },
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "アッサムティー",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                {
+                                                    "type": "span",
+                                                    "text": "アッサムティー"
+                                                },
+                                                {
+                                                    "type": "span",
+                                                    "text": "（Hot）",
+                                                    "size": "xs",
+                                                    "weight": "regular"
+                                                }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥400",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "ストレート / ミルク",
+                                        "size": "xs",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "アイスティー",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥300",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "ストレート / ミルク",
+                                        "size": "xs",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "ハーブティー",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "ハーブティー"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（Hot / Ice）",
+                                                        "size": "xs"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥400",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "かんきつジュース",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥450",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "スリーサンズさんより入荷の100%ジュース！！オススメです！",
+                                        "size": "xs",
+                                        "color": "#AAAAAA",
+                                        "wrap": True,
+                                        "contents": []
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "ジンジャーエール",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": []
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥300",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "ミルク",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "ミルク"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（Hot / Ice）",
+                                                        "size": "xs"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥300",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "ソイミルク",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "ソイミルク"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（Hot / Ice）",
+                                                        "size": "xs"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥300",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "margin": "lg",
+                                        "contents": [
+                                            {
+                                                "type": "text",
+                                                "text": "黒ごまオレ",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "flex": 3,
+                                                "align": "start",
+                                                "wrap": True,
+                                                "contents": [
+                                                    {
+                                                        "type": "span",
+                                                        "text": "黒ごまオレ"
+                                                    },
+                                                    {
+                                                        "type": "span",
+                                                        "text": "（Hot）",
+                                                        "size": "xs"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "￥400",
+                                                "weight": "bold",
+                                                "size": "lg",
+                                                "align": "end",
+                                                "contents": []
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+            result = FlexSendMessage.new_from_json_dict(content)
+            line_bot_api.push_message(profile.user_id, messages=result)
+
     # ボタンの入力を受け取るPostbackEvent
     @handler.add(PostbackEvent)
     def on_postback(event):
@@ -250,7 +1575,7 @@ class CallbackView(View):
             # メッセージを送信
             content = {
                 "type": "flex",
-                "altText": "予約時間を以下よりご選択ください",
+                "altText": "予約時間を以下よりご選択ください。",
                 "contents": {
                     "type": "bubble",
                     "header": {
@@ -432,7 +1757,7 @@ class CallbackView(View):
             # メッセージを送信
             content = {
                 "type": "flex",
-                "altText": "予約人数を以下よりご選択ください",
+                "altText": "予約人数を以下よりご選択ください。",
                 "contents": {
                     "type": "bubble",
                     "header": {
@@ -707,7 +2032,7 @@ class CallbackView(View):
             # メッセージを送信（お客様用）
             content = {
                 "type": "flex",
-                "altText": "ご予約ありがとうございます",
+                "altText": "ご予約ありがとうございます。",
                 "contents": {
                     "type": "bubble",
                     "hero": {

@@ -20,14 +20,11 @@ import googleapiclient.discovery
 import google.auth
 
 
-# CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"] # ローカルではコメントアウト
-# CHANNEL_SECRET = os.environ["CHANNEL_SECRET"] # ローカルではコメントアウト
+CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"]
+CHANNEL_SECRET = os.environ["CHANNEL_SECRET"]
 
-# line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN) # ローカルではコメントアウト
-# handler = WebhookHandler(CHANNEL_SECRET) # ローカルではコメントアウト
-
-line_bot_api = LineBotApi("LoQufLNooUro/P/XN9S9OaO8YF45+j47kIahuAzUwoF8mPO1VQQLdwgzTFRUn/qliX/Ndnd6dzKilib3F4gPQ1O4tQkNDoNl7Z57lzDZRCruOxRjKBNIERV2I3LRMvZQ8OKqj1UAdmsGPfZQEeV7iQdB04t89/1O/w1cDnyilFU=")
-handler = WebhookHandler("9a2b63f94bf6b809a34bbc2381950c9f")
+line_bot_api = LineBotApi(CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(CHANNEL_SECRET)
 
 class CallbackView(View):
     def get(self, request, *args, **kwargs):
@@ -1808,8 +1805,7 @@ class CallbackView(View):
                 # 編集スコープの設定(読み書き両方OKの設定)
                 SCOPES = ["https://www.googleapis.com/auth/calendar"]
                 # カレンダーIDの設定
-                calendar_id = "cafe.unelma@gmail.com"
-                # calendar_id = os.environ["MAIL"]
+                calendar_id = os.environ["MAIL"]
                 # 認証ファイルを使用して認証用オブジェクトを作成
                 gapi_creds = google.auth.load_credentials_from_file("credentials.json", SCOPES)[0]
                 # 認証用オブジェクトを使用してAPIを呼び出すためのオブジェクト作成
@@ -2184,8 +2180,7 @@ class CallbackView(View):
                 # 編集スコープの設定(読み書き両方OKの設定)
                 SCOPES = ["https://www.googleapis.com/auth/calendar"]
                 # カレンダーIDの設定
-                calendar_id = "cafe.unelma@gmail.com"
-                # calendar_id = os.environ["MAIL"]
+                calendar_id = os.environ["MAIL"]
                 # 認証ファイルを使用して認証用オブジェクトを作成
                 gapi_creds = google.auth.load_credentials_from_file("credentials.json", SCOPES)[0]
                 # 認証用オブジェクトを使用してAPIを呼び出すためのオブジェクト作成
@@ -2540,8 +2535,7 @@ class CallbackView(View):
                 # 編集スコープの設定(読み書き両方OKの設定)
                 SCOPES = ["https://www.googleapis.com/auth/calendar"]
                 # カレンダーIDの設定
-                calendar_id = "cafe.unelma@gmail.com"
-                # calendar_id = os.environ["MAIL"]
+                calendar_id = os.environ["MAIL"]
                 # 認証ファイルを使用して認証用オブジェクトを作成
                 gapi_creds = google.auth.load_credentials_from_file("credentials.json", SCOPES)[0]
                 # 認証用オブジェクトを使用してAPIを呼び出すためのオブジェクト作成
@@ -2821,10 +2815,8 @@ class CallbackView(View):
                     }
                     result = FlexSendMessage.new_from_json_dict(content)
 
-                    # PUSH_USER_ID = os.environ["PUSH_USER_ID"] # ローカルではコメントアウト
-                    # line_bot_api.push_message(PUSH_USER_ID, messages=result) # ローカルではコメントアウト
-
-                    line_bot_api.push_message("U4314fbfe96e7dd43429ddba54b3f6131", messages=result)
+                    PUSH_USER_ID = os.environ["PUSH_USER_ID"] 
+                    line_bot_api.push_message(PUSH_USER_ID, messages=result)
 
                     # メッセージを送信（お客様用）
                     content = {

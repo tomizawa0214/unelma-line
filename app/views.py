@@ -2874,7 +2874,8 @@ class CallbackView(View):
                                 },
                                 "footer": {
                                     "backgroundColor": "#F2ECDD",
-                                    "separator": True
+                                    "separator": True,
+                                    "separatorColor": "#888888"
                                 }
                             }
                         }

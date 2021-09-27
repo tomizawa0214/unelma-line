@@ -1833,7 +1833,7 @@ class CallbackView(View):
                     print("選択された日時の予約はできません。")
                     content = {
                         "type": "flex",
-                        "altText": "大変申し訳ございません。予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                        "altText": "大変申し訳ございません。予約できるお席が満席のため、大変お手数ですが再度予約時間をご選択ください。",
                         "contents": {
                             "type": "bubble",
                             "header": {
@@ -1851,7 +1851,7 @@ class CallbackView(View):
                                     },
                                     {
                                         "type": "text",
-                                        "text": "予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                                        "text": "予約できるお席が満席のため、大変お手数ですが再度予約時間をご選択ください。",
                                         "weight": "bold",
                                         "color": "#FF0000",
                                         "align": "start",
@@ -2208,7 +2208,7 @@ class CallbackView(View):
                     print("選択された日時の予約はできません。")
                     content = {
                         "type": "flex",
-                        "altText": "大変申し訳ございません。予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                        "altText": "大変申し訳ございません。予約できるお席が満席のため、大変お手数ですが再度予約時間をご選択ください。",
                         "contents": {
                             "type": "bubble",
                             "header": {
@@ -2226,7 +2226,7 @@ class CallbackView(View):
                                     },
                                     {
                                         "type": "text",
-                                        "text": "予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                                        "text": "予約できるお席が満席のため、大変お手数ですが再度予約時間をご選択ください。",
                                         "weight": "bold",
                                         "color": "#FF0000",
                                         "align": "start",
@@ -2563,7 +2563,7 @@ class CallbackView(View):
                     print("選択された日時の予約はできません。")
                     content = {
                         "type": "flex",
-                        "altText": "大変申し訳ございません。予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                        "altText": "大変申し訳ございません。予約できるお席が満席のため、大変お手数ですが再度予約時間をご選択ください。",
                         "contents": {
                             "type": "bubble",
                             "header": {
@@ -2581,7 +2581,7 @@ class CallbackView(View):
                                     },
                                     {
                                         "type": "text",
-                                        "text": "予約が満席に達してしまったため、大変お手数ですが再度予約時間をご選択ください。",
+                                        "text": "予約できるお席が満席のため、大変お手数ですが再度予約時間をご選択ください。",
                                         "weight": "bold",
                                         "color": "#FF0000",
                                         "align": "start",
@@ -2852,12 +2852,29 @@ class CallbackView(View):
                                     }
                                 ]
                             },
+                            "footer": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "※ご予約をキャンセルされる場合やご要望等ございましたら、お手数ですがMENUのお問い合わせよりご連絡お願いいたします。",
+                                        "size": "xxs",
+                                        "wrap": True,
+                                        "contents": []
+                                    }
+                                ]
+                            },
                             "styles": {
                                 "hero": {
                                     "backgroundColor": "#F2ECDD"
                                 },
                                 "body": {
                                     "backgroundColor": "#F2ECDD"
+                                },
+                                "footer": {
+                                    "backgroundColor": "#F2ECDD",
+                                    "separator": True
                                 }
                             }
                         }

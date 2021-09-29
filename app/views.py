@@ -223,7 +223,7 @@ class CallbackView(View):
             line_bot_api.push_message(profile.user_id, messages=result)
 
         # メニューのカルーセル出力
-        if text == "メニュー":
+        elif text == "メニュー":
 
             # プロフィール情報を取得
             profile = line_bot_api.get_profile(event.source.user_id)
@@ -1548,6 +1548,36 @@ class CallbackView(View):
             result = FlexSendMessage.new_from_json_dict(content)
             line_bot_api.push_message(profile.user_id, messages=result)
 
+        else:
+
+            # プロフィール情報を取得
+            profile = line_bot_api.get_profile(event.source.user_id)
+            print("お問い合わせアカウントのご案内")
+
+            # メッセージを送信（お客様用）
+            content = {
+                "type": "flex",
+                "altText": "ご予約をキャンセルしました",
+                "contents": {
+                    "type": "bubble",
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "大変恐れ入りますが、このアカウントでは個別のメッセージを受け付けておりません。個別メッセージは下記アカウントよりお問い合わせください。https://line.me/R/ti/p/@229pstqr",
+                                "weight": "bold",
+                                "align": "center",
+                                "contents": []
+                            }
+                        ]
+                    }
+                }
+            }
+            result = FlexSendMessage.new_from_json_dict(content)
+            line_bot_api.push_message(profile.user_id, messages=result)
+
     # ボタンの入力を受け取るPostbackEvent
     @handler.add(PostbackEvent)
     def on_postback(event):
@@ -2052,7 +2082,7 @@ class CallbackView(View):
                                                 "action": {
                                                     "type": "postback",
                                                     "label": "1名様",
-                                                    "text": "1名様",
+                                                    "displayText": "1名様",
                                                     "data": "1名様"
                                                 }
                                             },
@@ -2061,7 +2091,7 @@ class CallbackView(View):
                                                 "action": {
                                                     "type": "postback",
                                                     "label": "2名様",
-                                                    "text": "2名様",
+                                                    "displayText": "2名様",
                                                     "data": "2名様"
                                                 }
                                             }
@@ -2076,7 +2106,7 @@ class CallbackView(View):
                                                 "action": {
                                                     "type": "postback",
                                                     "label": "3名様",
-                                                    "text": "3名様",
+                                                    "displayText": "3名様",
                                                     "data": "3名様"
                                                 }
                                             },
@@ -2085,7 +2115,7 @@ class CallbackView(View):
                                                 "action": {
                                                     "type": "postback",
                                                     "label": "4名様",
-                                                    "text": "4名様",
+                                                    "displayText": "4名様",
                                                     "data": "4名様"
                                                 }
                                             }
@@ -2947,7 +2977,6 @@ class CallbackView(View):
                     "altText": "ご予約をキャンセルしました",
                     "contents": {
                         "type": "bubble",
-                        "direction": "ltr",
                         "body": {
                             "type": "box",
                             "layout": "vertical",

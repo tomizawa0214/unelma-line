@@ -1566,10 +1566,42 @@ class CallbackView(View):
                         "contents": [
                             {
                                 "type": "text",
-                                "text": "大変恐れ入りますが、このアカウントでは個別のメッセージを受け付けておりません。個別メッセージは下記アカウントよりお問い合わせください。https://line.me/R/ti/p/@229pstqr",
+                                "text": "こちらのアカウントでは個別メッセージを受け付けておりません。",
                                 "weight": "bold",
-                                "align": "center",
+                                "color": "#FF0000",
+                                "align": "start",
+                                "wrap": True,
                                 "contents": []
+                            },
+                            {
+                                "type": "text",
+                                "text": "大変恐れ入りますが、個別のお問い合わせは下記よりお願いいたします。",
+                                "weight": "regular",
+                                "size": "xs",
+                                "align": "start",
+                                "margin": "md",
+                                "wrap": True,
+                                "contents": []
+                            }
+                        ]
+                    },
+                    "footer": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "horizontal",
+                                "contents": [
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "uri",
+                                            "label": "お問い合わせ",
+                                            "uri": "https://lin.ee/0QlL9oL"
+                                        }
+                                    }
+                                ]
                             }
                         ]
                     }
